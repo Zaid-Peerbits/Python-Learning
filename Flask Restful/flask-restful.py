@@ -2,13 +2,18 @@ from flask import Flask
 from flask_restful import Resource, Api
 
 app = Flask(__name__)
-api = Api(app)
+api = Api(app) # This will connect Flask-RESTful to the app we created one the line before
 
-class HelloWorld(Resource):
-    def get(self):
-        return {'hello': 'world'}
+contacts = {} # This is just a dummy/mini database
 
-api.add_resource(HelloWorld, '/')
+class Contact(Resource):
+    def post(self, contact_id):
+        data = request.get_json()  # expects JSON input
+        contacts[contact_id] = data
+        return f"Your Data Is Saved: {data}"
+
+
+api.add_resource(Contact, '/contact/<string:contact_id>')
 
 if __name__ == '__main__':
     app.run(debug=True,port=5008)
