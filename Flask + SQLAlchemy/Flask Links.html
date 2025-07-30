@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <!-- Link to Google Fonts for Avenir (similar version since it's not free) -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap" rel="stylesheet"> <!-- Similar to Avenir -->
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body Styles */
+        body {
+            font-family: 'Nunito', sans-serif; /* Avenir-like Font */
+            background-color: #2b2b2b; /* Dark Gray Background */
+            color: #f0f0f0; /* Light Text Color */
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        /* Main Heading */
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            font-weight: 600;
+        }
+
+        h2 {
+            margin-top: 30px;
+            font-size: 1.6em;
+            color: #ddd;
+            margin-bottom: 15px;
+        }
+
+        /* Unordered List Style */
+        ul {
+            list-style-type: none;
+            margin-top: 10px;
+        }
+
+        li {
+            margin: 10px 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: #1e90ff; /* Bright Blue Color */
+            font-size: 1.1em;
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        a:hover {
+            color: #ff7f50; /* Soft Coral on Hover */
+            transform: scale(1.05); /* Slight Hover Animation */
+        }
+
+        /* Form Styles */
+        form {
+            background-color: #3a3a3a; /* Slightly Darker Background */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #ddd;
+        }
+
+        input[type="number"] {
+            padding: 12px;
+            font-size: 1.1em;
+            border: 1px solid #444;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            outline: none;
+            background-color: #333; /* Dark Input Background */
+            color: #f0f0f0; /* Light Text in Input */
+        }
+
+        input[type="number"]:focus {
+            border-color: #1e90ff; /* Blue Border on Focus */
+        }
+
+        button {
+            padding: 12px;
+            font-size: 1.1em;
+            background-color: #1e90ff; /* Blue Button */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        button:hover {
+            background-color: #ff7f50; /* Soft Coral on Hover */
+            transform: scale(1.05); /* Slight Hover Animation */
+        }
+
+        /* Link Container Styles */
+        #customer-links, #order-links {
+            background-color: #3a3a3a; /* Slightly Darker Background for Links */
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        #customer-links h3, #order-links h3 {
+            margin-bottom: 15px;
+            color: #ddd;
+        }
+
+        #customer-links ul, #order-links ul {
+            padding-left: 20px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            form {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            h2 {
+                font-size: 1.4em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Admin Panel</h1>
+
+    <h2>Quick Links</h2>
+    <ul>
+        <li><a href="http://localhost:5002/">Home</a></li>
+        <li><a href="http://localhost:5002/orders">View Orders</a></li>
+        <li><a href="http://localhost:5002/customers">View Customers</a></li>
+        <li><a href="http://localhost:5002/add_customer">Add New Customer</a></li>
+        <li><a href="http://localhost:5002/add_order">Add New Order</a></li>
+    </ul>
+
+    <h2>Customer Management</h2>
+    <form action="#" method="get" onsubmit="generateLinks(event, 'customer')">
+        <label for="customer-id">Enter Customer ID:</label>
+        <input type="number" id="customer-id" required>
+        <button type="submit">Generate Links</button>
+    </form>
+    <div id="customer-links"></div>
+
+    <h2>Order Management</h2>
+    <form action="#" method="get" onsubmit="generateLinks(event, 'order')">
+        <label for="order-id">Enter Order ID:</label>
+        <input type="number" id="order-id" required>
+        <button type="submit">Generate Links</button>
+    </form>
+    <div id="order-links"></div>
+
+    <script>
+        function generateLinks(event, type) {
+            event.preventDefault();
+            
+            let id;
+            let linkContainer;
+
+            if (type === 'customer') {
+                id = document.getElementById('customer-id').value;
+                linkContainer = document.getElementById('customer-links');
+            } else if (type === 'order') {
+                id = document.getElementById('order-id').value;
+                linkContainer = document.getElementById('order-links');
+            }
+
+            if (!id) {
+                return;
+            }
+
+            // Generate the dynamic links
+            const editLink = `http://localhost:5002/edit_${type}/${id}`;
+            const deleteLink = `http://localhost:5002/delete_${type}/${id}`;
+
+            linkContainer.innerHTML = `
+                <h3>Links for ${type.charAt(0).toUpperCase() + type.slice(1)} ID ${id}</h3>
+                <ul>
+                    <li><a href="${editLink}">Edit ${type.charAt(0).toUpperCase() + type.slice(1)} ${id}</a></li>
+                    <li><a href="${deleteLink}" onclick="return confirm('Are you sure you want to delete this ${type}?')">Delete ${type.charAt(0).toUpperCase() + type.slice(1)} ${id}</a></li>
+                </ul>
+            `;
+        }
+    </script>
+
+</body>
+</html>
